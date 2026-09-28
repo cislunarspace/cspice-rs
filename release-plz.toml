@@ -1,0 +1,38 @@
+# release-plz 配置：双 crate（cspice-rs / cspice-rs-sys）按 workspace 统一管理，
+# 版本与 changelog 由 conventional commit type 前缀驱动，commit 正文为中文。
+# CARGO_REGISTRY_TOKEN secret 就绪前 publish 不生效，仅生成版本 PR。
+
+[changelog]
+header = "# Changelog\n"
+
+[[changelog.commit_parsers]]
+message = "^feat"
+group = "新增功能"
+
+[[changelog.commit_parsers]]
+message = "^fix"
+group = "缺陷修复"
+
+[[changelog.commit_parsers]]
+message = "^perf"
+group = "性能优化"
+
+[[changelog.commit_parsers]]
+message = "^docs"
+group = "文档"
+
+[[changelog.commit_parsers]]
+message = "^ci"
+group = "持续集成"
+
+[[changelog.commit_parsers]]
+message = "^refactor"
+group = "重构"
+
+[[changelog.commit_parsers]]
+message = "^test"
+group = "测试"
+
+[[changelog.commit_parsers]]
+message = ".*"
+group = "其他"

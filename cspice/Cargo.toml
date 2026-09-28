@@ -2,8 +2,8 @@
 name = "cspice-rs"
 version = "0.1.0"
 edition = "2021"
-description = "Safe wrapper around the NAIF CSPICE toolkit"
 license = "LGPL-3.0"
+rust-version = "1.71"
 authors = ["Jacob Halsey <jacob@jhalsey.com>", "cislunarspace", "Contributors"]
 homepage = "https://github.com/cislunarspace/cspice-rs/tree/main/cspice"
 repository = "https://github.com/cislunarspace/cspice-rs"

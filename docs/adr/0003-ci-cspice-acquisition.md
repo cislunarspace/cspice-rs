@@ -15,10 +15,9 @@
 ## 决策
 
 - **常规获取**：CI 从 NAIF 下载固定版本的三平台预编译包（`PC_Linux_GCC_64bit`、`MacM1_OSX_clang_64bit`、`PC_Windows_VisualC_64bit`），版本号写入 workflow env，`actions/cache` 以 "包名+版本" 为 key 缓存；Unix 包解压后将 `lib/cspice.a` 重命名为 `lib/libcspice.a`。
-- **回退**：NAIF 不可达时改拉取 CODE-core `cspice-v1` release 资产（URL 同样写入 workflow env 并注明仅回退用）。回退资产覆盖 x64 三平台，macOS arm64 无回退，重试依赖 NAIF 恢复。
 - **`downloadcspice` feature 不用于 CI**：其每次干净构建都联网下载且版本不固定，不满足可复现门禁；仅保留给本地一次性试验。
 - **aarch64-linux 永远只做交叉 `cargo check`**：bindgen 只需头文件不需链接（x64 包的 `include/` 即可），配合 `CSPICE_CLANG_TARGET=aarch64-unknown-linux-gnu` 生成 LP64 视角的绑定，足以在编译期拦截 E0606/E0308 类缺陷；链接级与运行时行为因 NAIF 无该平台预编译包而无法覆盖，此边界永久记录于此。
-- 三平台 `cargo test --workspace -- --test-threads=1`（CSPICE 全局状态要求串行）+ clippy + fmt + MSRV check 构成完整门禁。
+- **回退**：NAIF 不可达时改拉取 CODE-core `cspice-v1` release 资产（URL 同样写入 workflow env 并注明仅回退用）。回退资产覆盖 Linux x64/aarch64 与 Windows x64；无 macOS 包，macOS 失败只能重试等待 NAIF 恢复。
 
 ## 后果
 

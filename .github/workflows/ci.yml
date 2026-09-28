@@ -1,0 +1,115 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  # NAIF toolkit 版本，缓存 key 组成部分。NAIF 下载 URL 不带版本号，
+  # 其发布新版本时手动升级此值以刷新缓存并重新验证。
+  CSPICE_VERSION: N0067
+  # NAIF 不可达时的回退资产（仅 CI 回退用）：CODE-core cspice-v1 release。
+  # 覆盖 Linux x64/aarch64 与 Windows x64；无 macOS 包。
+  FALLBACK_BASE: https://github.com/cislunarspace/CODE-core/releases/download/cspice-v1
+
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+      - run: cargo fmt --all --check
+
+  clippy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: ./.github/actions/setup-cspice
+        with:
+          naif-package: PC_Linux_GCC_64bit
+          naif-ext: tar.Z
+          fallback-asset: cspice-linux.zip
+      - uses: Swatinem/rust-cache@v2
+        with:
+          env-vars: CSPICE_DIR
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+
+  test:
+    name: test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            naif-package: PC_Linux_GCC_64bit
+            naif-ext: tar.Z
+            fallback-asset: cspice-linux.zip
+          # macos-latest 为 arm64 runner，用 M1 包；无回退资产（ADR 0003）。
+          - os: macos-latest
+            naif-package: MacM1_OSX_clang_64bit
+            naif-ext: tar.Z
+            fallback-asset: ""
+          - os: windows-latest
+            naif-package: PC_Windows_VisualC_64bit
+            naif-ext: zip
+            fallback-asset: cspice-windows.zip
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/setup-cspice
+        with:
+          naif-package: ${{ matrix.naif-package }}
+          naif-ext: ${{ matrix.naif-ext }}
+          fallback-asset: ${{ matrix.fallback-asset }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          env-vars: CSPICE_DIR
+      # CSPICE 有进程级全局状态，测试必须串行。
+      - run: cargo test --workspace -- --test-threads=1
+
+  # NAIF 无 aarch64 Linux 预编译包：bindgen 只需头文件，交叉 check 足以在
+  # 编译期拦截 E0606/E0308 类平台缺陷；链接级验证不覆盖（ADR 0003）。
+  check-aarch64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-unknown-linux-gnu
+      - uses: ./.github/actions/setup-cspice
+        with:
+          naif-package: PC_Linux_GCC_64bit
+          naif-ext: tar.Z
+          fallback-asset: cspice-linux.zip
+      - uses: Swatinem/rust-cache@v2
+        with:
+          env-vars: CSPICE_DIR
+          key: check-aarch64-${{ hashFiles('**/Cargo.toml') }}
+      - run: cargo check --workspace --target aarch64-unknown-linux-gnu
+        env:
+          CSPICE_CLANG_TARGET: aarch64-unknown-linux-gnu
+
+  msrv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # MSRV = 所选 bindgen 的 rust-version（见 cspice-sys/Cargo.toml）
+      - uses: dtolnay/rust-toolchain@1.71.0
+      - uses: ./.github/actions/setup-cspice
+        with:
+          naif-package: PC_Linux_GCC_64bit
+          naif-ext: tar.Z
+          fallback-asset: cspice-linux.zip
+      - run: cargo check --workspace

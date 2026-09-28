@@ -1,0 +1,72 @@
+name: "Setup CSPICE"
+description: "下载/恢复 CSPICE 编译包并导出 CSPICE_DIR（NAIF 优先，失败回退 CODE-core 资产）"
+inputs:
+  naif-package:
+    description: "NAIF 平台包名（如 PC_Linux_GCC_64bit）"
+    required: true
+  naif-ext:
+    description: "NAIF 包扩展名（tar.Z 或 zip）"
+    required: true
+  fallback-asset:
+    description: "回退资产文件名（空字符串表示无回退，仅 macOS）"
+    required: false
+    default: ""
+runs:
+  using: "composite"
+  steps:
+    - name: 恢复 CSPICE 缓存
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.cspice-cache
+        # CSPICE_VERSION 来自调用方 workflow env；NAIF 发布新版本时手动升级以刷新缓存。
+        key: cspice-${{ inputs.naif-package }}-${{ env.CSPICE_VERSION }}
+
+    - name: 下载并解压 CSPICE
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        set -euxo pipefail
+        mkdir -p ~/.cspice-cache && cd ~/.cspice-cache
+        rm -rf cspice mice_linux mice_linux_aarch64 mice_windows cspice.pkg cspice.zip
+
+        url="https://naif.jpl.nasa.gov/pub/naif/toolkit/C/${{ inputs.naif-package }}/packages/cspice.${{ inputs.naif-ext }}"
+        if curl -fLsS --retry 2 -o cspice.pkg "$url"; then
+          echo "downloaded from NAIF"
+        else
+          echo "NAIF unreachable, trying fallback asset"
+          if [ -z "${{ inputs.fallback-asset }}" ]; then
+            echo "::error::NAIF 不可达且该平台无回退资产（macOS），请重试或手动检查 NAIF 服务状态"
+            exit 1
+          fi
+          curl -fLsS --retry 2 -o cspice.zip \
+            "${FALLBACK_BASE}/${{ inputs.fallback-asset }}"
+        fi
+
+        # NAIF tar.Z 实为 gzip 兼容流（上游 CI 同用法）；zip 走 bsdtar/GNU tar 均可。
+        if [ -f cspice.pkg ]; then
+          case "${{ inputs.naif-ext }}" in
+            tar.Z) tar -zxf cspice.pkg ;;
+            zip)   tar -xf  cspice.pkg ;;
+          esac
+        else
+          tar -xf cspice.zip
+        fi
+
+        # 统一定位含 include/ 的目录（NAIF 包为 cspice/，回退包为 mice_*）
+        dist="$(dirname "$(find . -maxdepth 2 -name include -type d | head -1)")"
+        test -d "$dist/include"
+
+        # Unix 静态库名：cargo:rustc-link-lib=static=cspice 查找 libcspice.a，
+        # NAIF 包与 CODE-core 回退包内均为 cspice.a，需重命名（Windows 为 cspice.lib 无需处理）。
+        if [ "$(uname -s)" != "Windows_NT" ] && [ -f "$dist/lib/cspice.a" ]; then
+          mv "$dist/lib/cspice.a" "$dist/lib/libcspice.a"
+        fi
+
+    - name: 导出 CSPICE_DIR
+      shell: bash
+      run: |
+        set -euxo pipefail
+        cd ~/.cspice-cache
+        dist="$(dirname "$(find . -maxdepth 2 -name include -type d | head -1)")"
+        echo "CSPICE_DIR=$(cd "$dist" && pwd)" >> "$GITHUB_ENV"
