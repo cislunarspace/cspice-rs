@@ -76,4 +76,10 @@ runs:
         set -euxo pipefail
         cd ~/.cspice-cache
         dist="$(dirname "$(find . -maxdepth 2 -name include -type d | head -1)")"
-        echo "CSPICE_DIR=$(cd "$dist" && pwd)" >> "$GITHUB_ENV"
+        dir="$(cd "$dist" && pwd)"
+        # Windows 上该 bash 为 Git Bash：pwd 输出 MSYS 路径（/c/...），Windows
+        # 进程（cargo/build.rs）无法识别，用 cygpath -m 转 C:/... 形式；Unix 无 cygpath 保持原样。
+        if command -v cygpath >/dev/null 2>&1; then
+          dir="$(cygpath -m "$dir")"
+        fi
+        echo "CSPICE_DIR=$dir" >> "$GITHUB_ENV"
