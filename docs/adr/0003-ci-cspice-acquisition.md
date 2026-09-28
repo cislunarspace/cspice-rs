@@ -1,30 +1,31 @@
-# ADR 0003：CI 的 CSPICE 获取策略与 aarch64 验证边界
+# ADR 0003: CSPICE acquisition strategy for CI and the aarch64 verification boundary
 
-- 状态：已接受
-- 日期：2026-10-24
-- 决策人：cislunarspace 维护者
+- Status: Accepted
+- Date: 2026-10-24
+- Decision makers: cislunarspace maintainers
 
-## 背景
+## Context
 
-`cspice-rs-sys` 构建需要 CSPICE 头文件（bindgen）与静态库（链接测试）。本地开发者以 `CSPICE_DIR` 手动提供；CI 需要自动获取。约束：
+Building `cspice-rs-sys` requires the CSPICE headers (bindgen) and the static library (link tests). Local developers provide them manually via `CSPICE_DIR`; CI must fetch them automatically. Constraints:
 
-1. NAIF 不提供 aarch64 Linux 预编译包；
-2. NAIF 服务器对 CI runner 的可达性不受我们控制；
-3. 绑定的历史缺陷恰是平台差异类（E0606 aarch64、LP64 `SpiceInt`），必须有多平台门禁。
+1. NAIF does not provide a precompiled aarch64 Linux package;
+2. The reachability of NAIF servers from CI runners is outside our control;
+3. The historical defects of the bindings are exactly of the platform-difference kind (E0606 on aarch64, LP64 `SpiceInt`), so multi-platform gates are mandatory.
 
-## 决策
+## Decision
 
-- **常规获取**：CI 从 NAIF 下载固定版本的三平台预编译包（`PC_Linux_GCC_64bit`、`MacM1_OSX_clang_64bit`、`PC_Windows_VisualC_64bit`），版本号写入 workflow env，`actions/cache` 以 "包名+版本" 为 key 缓存；Unix 包解压后将 `lib/cspice.a` 重命名为 `lib/libcspice.a`。
-- **`downloadcspice` feature 不用于 CI**：其每次干净构建都联网下载且版本不固定，不满足可复现门禁；仅保留给本地一次性试验。
-- **aarch64-linux 永远只做交叉 `cargo check`**：bindgen 只需头文件不需链接（x64 包的 `include/` 即可），配合 `CSPICE_CLANG_TARGET=aarch64-unknown-linux-gnu` 生成 LP64 视角的绑定，足以在编译期拦截 E0606/E0308 类缺陷；链接级与运行时行为因 NAIF 无该平台预编译包而无法覆盖，此边界永久记录于此。
-- **回退**：NAIF 不可达时改拉取 CODE-core `cspice-v1` release 资产（URL 同样写入 workflow env 并注明仅回退用）。回退资产覆盖 Linux x64/aarch64 与 Windows x64；无 macOS 包，macOS 失败只能重试等待 NAIF 恢复。
+- **Regular acquisition**: CI downloads version-pinned precompiled packages for three platforms from NAIF (`PC_Linux_GCC_64bit`, `MacM1_OSX_clang_64bit`, `PC_Windows_VisualC_64bit`); the version number is written into the workflow env, and `actions/cache` caches with a "package name + version" key; after unpacking, Unix packages have `lib/cspice.a` renamed to `lib/libcspice.a`.
+- **The `downloadcspice` feature is not used in CI**: it downloads over the network on every clean build with an unpinned version, which does not satisfy reproducible gating; it is kept only for one-off local experiments.
+- **aarch64-linux is forever cross-`cargo check` only**: bindgen needs the headers but not linking (the x64 package's `include/` suffices); combined with `CSPICE_CLANG_TARGET=aarch64-unknown-linux-gnu` it generates bindings from an LP64 perspective, which is enough to catch E0606/E0308-class defects at compile time; link-level and runtime behavior cannot be covered because NAIF publishes no precompiled package for that platform — this boundary is permanently recorded here.
+- **Fallback**: when NAIF is unreachable, CI pulls the CODE-core `cspice-v1` release assets instead (that URL is likewise written into the workflow env and marked as fallback-only). The fallback assets cover Linux x64/aarch64 and Windows x64; there is no macOS package, so a macOS failure can only be retried while waiting for NAIF to recover.
 
-## 后果
+## Consequences
 
-- 正面：平台差异类缺陷（本仓库的建立起因）被 CI 持续拦截；NAIF 故障不再阻塞 CI。
-- 负面：aarch64-linux 的链接与运行时正确性无门禁，依赖 LP64 与 aarch64 共享的整型宽度论证；NAIF 包升级需手动改版本号。
-- 若 NAIF 未来提供 aarch64 Linux 包，应升级为完整 test job 并修订本 ADR。
+- Positive: platform-difference defects (the reason this repository exists) are continuously intercepted by CI; NAIF outages no longer block CI.
+- Negative: aarch64-linux link-level and runtime correctness have no gate, relying on the argument that LP64 and aarch64 share integer widths; upgrading the NAIF package requires manually changing the version number.
+- If NAIF ships an aarch64 Linux package in the future, this should be upgraded to a full test job and this ADR revised.
 
-## 修订记录
+## Revision History
 
-- 2026-10-24：首次记录。
+- 2026-10-24: First recorded.
+- 2026-09: Translated to English for public release.

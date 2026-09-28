@@ -1,33 +1,34 @@
-# ADR 0001：以独立仓库 hard fork jacob-pro/cspice-rs
+# ADR 0001: Hard fork jacob-pro/cspice-rs as a standalone repository
 
-- 状态：已接受
-- 日期：2026-10-24
-- 决策人：cislunarspace 维护者
+- Status: Accepted
+- Date: 2026-10-24
+- Decision makers: cislunarspace maintainers
 
-## 背景
+## Context
 
-[jacob-pro/cspice-rs](https://github.com/jacob-pro/cspice-rs) 是 Rust 社区对 NAIF CSPICE 的主要绑定之一（crate `cspice` 0.1.0 / `cspice-sys` 1.0.4），但自 2022 年起无提交、无 issue 处理。e2m2e（CODE-core）依赖该库的地月空间算法栈在向 aarch64 Linux 与 LP64 平台扩展时暴露了上游缺陷：
+[jacob-pro/cspice-rs](https://github.com/jacob-pro/cspice-rs) is one of the Rust community's primary bindings to NAIF CSPICE (crates `cspice` 0.1.0 / `cspice-sys` 1.0.4), but has had no commits and no issue handling since 2022. When e2m2e (CODE-core) extended its Earth–Moon space algorithm stack, which depends on this library, to aarch64 Linux and LP64 platforms, upstream defects surfaced:
 
-1. `cspice/src/string.rs` 的 `&[u8] -> *const [i8]` 无效 cast 在 aarch64 上直接编译失败（E0606）；
-2. `spk.rs` 与 `time/julian_date.rs` 三处硬编码 `i32` 传入 `SpiceInt`（LP64 平台为 i64，E0308），Linux/macOS 无法编译。
+1. The invalid `&[u8] -> *const [i8]` cast in `cspice/src/string.rs` fails to compile outright on aarch64 (E0606);
+2. Three places in `spk.rs` and `time/julian_date.rs` hard-code `i32` where a `SpiceInt` is expected (i64 on LP64 platforms, E0308), so Linux/macOS cannot compile.
 
-我们向上游提交了 PR #12（aarch64 cast 修复）与 PR #13（`cspice::ffi` 安全包装），并按上游维护者历史响应节奏设定了等待期限。期限届满无响应，fork 转为长期独立维护已成必然。
+We submitted PR #12 (aarch64 cast fix) and PR #13 (`cspice::ffi` safe wrappers) upstream and set a waiting deadline based on the upstream maintainer's historical response cadence. The deadline passed without a response, making long-term independent maintenance of the fork inevitable.
 
-## 决策
+## Decision
 
-建立全新独立仓库 `cislunarspace/cspice-rs`（非 GitHub fork，保留完整 git 历史），以 hard fork 方式独立维护：
+Establish a brand-new standalone repository `cislunarspace/cspice-rs` (not a GitHub fork; the full git history is preserved) and maintain it independently as a hard fork:
 
-- 基线 = 上游 master（736cc37）+ PR #12 + PR #13 等价内容；
-- crate 更名 `cspice-rs` / `cspice-rs-sys`（原名在 crates.io 被上游占用，见 ADR 0002），版本线从 0.1.0 重新起步，不继承上游版本号，也不承诺与其兼容；
-- LP64 三处修复与 aarch64 交叉检查（ADR 0003）随基线入库；
-- LGPL-3.0 与原作者署名原样保留。
+- Baseline = upstream master (736cc37) + the equivalent content of PR #12 + PR #13;
+- Crates renamed `cspice-rs` / `cspice-rs-sys` (the original names are taken on crates.io by upstream, see ADR 0002); the version line restarts from 0.1.0, inherits no upstream version numbers, and promises no compatibility with them;
+- The three LP64 fixes and the aarch64 cross-check (ADR 0003) land with the baseline;
+- LGPL-3.0 and the original author's attribution are preserved as-is.
 
-## 后果
+## Consequences
 
-- 正面：LP64/aarch64 缺陷立即可控；发布节奏、CI 与维护策略自主。
-- 负面：与上游（若复活）及 crates.io 原名 crate 形成竞争关系，需在 README 明确来源与致谢；使用方（含 CODE-core）需一次依赖切换。
-- 上游 PR #12/#13 在新仓库有等价内容后即失去紧迫性；若上游日后响应，优先把新仓库的增量修复回传上游，双向不冲突。
+- Positive: LP64/aarch64 defects become immediately controllable; release cadence, CI, and maintenance strategy are under our own control.
+- Negative: We compete with upstream (should it revive) and with the crates.io crates under the original names, so provenance and acknowledgements must be stated clearly in the README; consumers (including CODE-core) need a one-time dependency switch.
+- Once the new repository contains the equivalent of upstream PR #12/#13, those PRs lose urgency; if upstream responds later, preferentially push the new repository's incremental fixes back upstream — the two directions do not conflict.
 
-## 修订记录
+## Revision History
 
-- 2026-10-24：首次记录。
+- 2026-10-24: First recorded.
+- 2026-09: Translated to English for public release.

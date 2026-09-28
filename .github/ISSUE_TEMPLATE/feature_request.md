@@ -1,23 +1,23 @@
-name: 功能建议
-description: 建议新增 CSPICE 函数包装或改进现有接口
+name: Feature request
+description: Suggest a new CSPICE function wrapper or an improvement to an existing interface
 labels: ["enhancement"]
 body:
   - type: textarea
     id: problem
     attributes:
-      label: 想解决的问题
-      description: 该功能应对的场景
+      label: Problem to solve
+      description: The scenario this feature should address
     validations:
       required: true
   - type: textarea
     id: solution
     attributes:
-      label: 期望的方案
-      description: 期望的 API 形态；若对应 CSPICE 函数请附 NAIF 文档链接
+      label: Proposed solution
+      description: The desired API shape; if it maps to a CSPICE function, link the NAIF documentation
     validations:
       required: true
   - type: textarea
     id: alternatives
     attributes:
-      label: 备选方案
-      description: 已考虑过的其他做法
+      label: Alternatives considered
+      description: Other approaches you have already considered

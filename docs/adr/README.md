@@ -1,9 +1,9 @@
-# 架构决策记录（ADR）
+# Architecture Decision Records (ADR)
 
-ADR 是决策快照：记录当时的状态、决策与后果，一经接受不改写历史结论；后续变化以 "修订记录" 追加或另开递增编号的新 ADR。
+An ADR is a snapshot of a decision: it records the state, the decision, and its consequences at the time it was made. Once accepted, the historical conclusions are never rewritten; later changes are appended as entries in "Revision History" or captured in a new ADR with an incremented number.
 
-|编号|标题|
+| Number | Title |
 |---|---|
-|[0001](0001-hard-fork-standalone-repo.md)|以独立仓库 hard fork jacob-pro/cspice-rs|
-|[0002](0002-dual-crate-naming.md)|双 crate 命名 cspice-rs / cspice-rs-sys|
-|[0003](0003-ci-cspice-acquisition.md)|CI 的 CSPICE 获取策略与 aarch64 验证边界|
+| [0001](0001-hard-fork-standalone-repo.md) | Hard fork jacob-pro/cspice-rs as a standalone repository |
+| [0002](0002-dual-crate-naming.md) | Dual-crate naming: cspice-rs / cspice-rs-sys |
+| [0003](0003-ci-cspice-acquisition.md) | CSPICE acquisition strategy for CI and the aarch64 verification boundary |
