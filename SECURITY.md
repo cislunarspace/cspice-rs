@@ -1,17 +1,17 @@
-# 安全策略
+# Security Policy
 
-## 报告漏洞
+## Reporting a Vulnerability
 
-请勿通过公开 issue 报告安全漏洞。请使用 GitHub 私密安全公告（Security → Advisories → Report a vulnerability），或联系仓库维护者。
+Please do not report security vulnerabilities through public issues. Use GitHub private security advisories (Security → Advisories → Report a vulnerability), or contact the repository maintainers.
 
-修复期间请勿公开披露细节；我们会在修复发布后致谢报告者（除非要求匿名）。
+Please do not disclose details publicly while a fix is in progress; we will credit reporters once the fix is released (unless anonymity is requested).
 
-## 支持范围
+## Scope of Support
 
-- 本仓库的 Rust 绑定代码（`cspice/`、`cspice-sys/`、构建脚本、CI）。
-- CSPICE 工具集本体（NAIF 发布的 C 库）的缺陷请报告给 [NAIF](https://naif.jpl.nasa.gov/naif/)；绑定层的临时规避措施可在本仓库评估。
+- The Rust binding code in this repository (`cspice/`, `cspice-sys/`, build scripts, CI).
+- Defects in the CSPICE toolkit itself (the C library published by NAIF) should be reported to [NAIF](https://naif.jpl.nasa.gov/naif/); interim workarounds at the binding layer can be evaluated in this repository.
 
-## 处理时限
+## Response Timeline
 
-- P0（内存安全、可被利用的 UB）：3 天内响应。
-- 其他：7 天内响应。
+- P0 (memory safety, exploitable UB): response within 3 days.
+- Others: response within 7 days.

@@ -1,6 +1,6 @@
 # 术语表
 
-本文件是 cspice-rs 的唯一领域术语表。术语在此定名后，代码注释、文档、issue 与 ADR 用词保持一致；新增术语先入此表再使用。文档统一使用弯引号 ""，不用直角引号。
+本文件是 cspice-rs 的唯一领域术语表。术语在此定名后，代码注释、文档、issue 与 ADR 用词保持一致；新增术语先入此表再使用。中文文本统一使用弯引号 ""，不用直角引号；英文文档使用英文标点。
 
 ## SPICE
 
@@ -22,7 +22,7 @@ Ephemeris Time，即 Barycentric Dynamical Time（TDB），单位为 J2000 历�
 
 在 `cspice_rs_sys` 的 FFI 之上封装的 Rust 函数：负责缓冲区分配、字符串转换、线程锁与错误翻译，调用方不接触裸指针。集中模式见 `cspice/src/ffi.rs`。
 
-## ffi 模块
+## ffi module（ffi 模块）
 
 `cspice_rs::ffi`：后加入的安全包装集合（pxform/sxform/bodvrd/et2utc/ktotal 等），以 "erract=RETURN + errdev=NULL + 显式错误检查" 模式处理错误，错误类型为 `SpiceFfiError`。
 

@@ -1,30 +1,30 @@
-# 贡献指南
+# Contributing Guide
 
-感谢关注 cspice-rs！本仓库是 [jacob-pro/cspice-rs](https://github.com/jacob-pro/cspice-rs) 的独立维护 hard fork，由 cislunarspace 维护。
+Thanks for your interest in cspice-rs! This repository is an independently maintained hard fork of [jacob-pro/cspice-rs](https://github.com/jacob-pro/cspice-rs), maintained by cislunarspace.
 
-## 开发环境
+## Development Environment
 
-1. Rust 工具链：stable（MSRV 见各 crate 的 `rust-version` 字段）。
-2. 安装 Clang/libclang（bindgen 依赖，Windows 可用 LLVM 官方安装器并设置 `LIBCLANG_PATH`）。
-3. 从 [NAIF toolkit 页面](https://naif.jpl.nasa.gov/naif/toolkit_C.html) 下载对应平台的 CSPICE 编译包并解压，设置 `CSPICE_DIR` 指向含 `include/` 与 `lib/` 的 `cspice` 目录；Unix 平台需先把 `lib/cspice.a` 重命名为 `lib/libcspice.a`。
+1. Rust toolchain: stable (MSRV per crate, see the `rust-version` field).
+2. Install Clang/libclang (a bindgen dependency; on Windows use the official LLVM installer and set `LIBCLANG_PATH`).
+3. Download the CSPICE toolkit for your platform from the [NAIF toolkit page](https://naif.jpl.nasa.gov/naif/toolkit_C.html) and unpack it, then set `CSPICE_DIR` to the `cspice` directory containing `include/` and `lib/`; on Unix platforms, first rename `lib/cspice.a` to `lib/libcspice.a`.
 
-## 本地验证
+## Local Verification
 
 ```bash
-make test          # fmt + clippy + 串行全量测试（CSPICE 全局状态要求 --test-threads=1）
-make format        # 就地格式化
+make test          # fmt + clippy + full test suite, serialized (CSPICE global state requires --test-threads=1)
+make format        # format in place
 ```
 
-交叉验证 LP64 平台（无 aarch64 Linux 预编译包，只做 check 不链接）：
+Cross-check LP64 platforms (no precompiled aarch64 Linux package; check only, no linking):
 
 ```bash
 rustup target add aarch64-unknown-linux-gnu
 CSPICE_CLANG_TARGET=aarch64-unknown-linux-gnu cargo check --workspace --target aarch64-unknown-linux-gnu
 ```
 
-## 提交规范
+## Commit Convention
 
-commit message 使用 conventional commit type 前缀 + 中文正文：
+Commit messages use a conventional-commit type prefix plus a Chinese body:
 
 ```
 fix: 修复 LP64 平台 SpiceInt 硬编码 i32
@@ -32,15 +32,15 @@ feat: 新增 pxform 安全包装
 docs: 补充 aarch64 交叉验证说明
 ```
 
-允许的 type：`feat`、`fix`、`docs`、`ci`、`chore`、`refactor`、`test`、`perf`。版本发布由 release-plz 依据 commit type 自动化。
+Allowed types: `feat`, `fix`, `docs`, `ci`, `chore`, `refactor`, `test`, `perf`. Releases are automated by release-plz based on the commit type.
 
-## 代码约定
+## Code Conventions
 
-- rustdoc 与代码注释使用英文；README、issue、commit 正文使用中文。
-- FFI 包装不得绕过线程锁直接调用 CSPICE；新增安全包装遵循 `ffi.rs` 的 "erract=RETURN + 显式错误检查" 模式。
-- `SpiceInt`/`SpiceChar` 等 CSPICE 类型别名不得用固定宽度整型硬编码替代（LP64 平台 `SpiceInt` 为 i64，见 ADR 0001 与 CI 的 aarch64 check job）。
-- 测试必须 `--test-threads=1` 运行；CSPICE 有进程级全局状态。
+- rustdoc and code comments use English; commit bodies use Chinese.
+- FFI wrappers must not call CSPICE bypassing the thread lock; new safe wrappers follow the "erract=RETURN + explicit error checking" pattern in `ffi.rs`.
+- CSPICE type aliases such as `SpiceInt`/`SpiceChar` must not be replaced with hard-coded fixed-width integer types (`SpiceInt` is i64 on LP64 platforms; see ADR 0001 and the aarch64 check job in CI).
+- Tests must run with `--test-threads=1`; CSPICE has process-global state.
 
-## PR 流程
+## Pull Request Process
 
-主干分支 `main` 受保护：需 PR、CI 通过且会话解决后方可合并，禁止 force push。改动行为时在 PR 描述中给出本地验证输出。
+The `main` branch is protected: merging requires a PR, passing CI, and resolved conversations; force pushes are forbidden. When changing behavior, include your local verification output in the PR description.
