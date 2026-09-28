@@ -1,6 +1,8 @@
 # cspice-rs-sys
 
 [![CI](https://github.com/cislunarspace/cspice-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/cislunarspace/cspice-rs/actions/workflows/ci.yml)
+[![crates.io](https://img.shields.io/crates/v/cspice-rs-sys.svg)](https://crates.io/crates/cspice-rs-sys)
+[![docs.rs](https://docs.rs/cspice-rs-sys/badge.svg)](https://docs.rs/cspice-rs-sys/latest/cspice_rs_sys/)
 ![maintenance-status](https://img.shields.io/badge/maintenance-actively--developed-blue.svg)
 
 Unsafe bindings to the NAIF [SPICE Toolkit](https://naif.jpl.nasa.gov/naif/index.html).

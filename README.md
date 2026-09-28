@@ -24,18 +24,18 @@ Rust 对 [NAIF CSPICE](https://naif.jpl.nasa.gov/naif/index.html) 工具集的�
 
 也可以启用 `downloadcspice` feature 在构建时自动从 NAIF 服务器下载 CSPICE。注意：这会显著增加构建时间，且每次干净构建都需要网络连接，CI 与生产构建不建议使用。
 
-最小依赖示例（已发布到 crates.io 后）：
+crates.io 已发布（0.1.0）：
 
 ```toml
 [dependencies]
 cspice-rs = "0.1"
 ```
 
-当前以 git 依赖使用：
+或锁定的 git tag：
 
 ```toml
 [dependencies]
-cspice-rs = { git = "https://github.com/cislunarspace/cspice-rs", tag = "v0.1.0" }
+cspice-rs = { git = "https://github.com/cislunarspace/cspice-rs", tag = "v0.1.1" }
 ```
 
 ## 示例
