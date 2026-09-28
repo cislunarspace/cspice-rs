@@ -3,7 +3,7 @@
 //! See [Performing simple operations on 3D vectors](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/info/mostused.html#U)
 use crate::coordinates::Rectangular;
 use crate::with_spice_lock_or_panic;
-use cspice_sys::{vsep_c, SpiceDouble};
+use cspice_rs_sys::{vsep_c, SpiceDouble};
 use derive_more::{Deref, DerefMut, From, Into};
 
 /// A 3D vector

@@ -6,7 +6,7 @@ use crate::string::StringParam;
 use crate::time::Et;
 use crate::vector::Vector3D;
 use crate::{with_spice_lock_or_panic, Error};
-use cspice_sys::{spkez_c, spkezp_c, spkezr_c, spkpos_c, SpiceDouble};
+use cspice_rs_sys::{spkez_c, spkezp_c, spkezr_c, spkpos_c, SpiceDouble, SpiceInt};
 use derive_more::Into;
 
 /// A Cartesian state vector representing the position and velocity of the target body
@@ -81,11 +81,11 @@ where
         let mut light_time = 0.0;
         unsafe {
             spkez_c(
-                target,
+                target as SpiceInt,
                 et.0,
                 reference_frame.into().as_mut_ptr(),
                 aberration_correction.as_spice_char(),
-                observing_body,
+                observing_body as SpiceInt,
                 pos_vel.as_mut_ptr(),
                 &mut light_time,
             )
@@ -115,11 +115,11 @@ where
         let mut light_time = 0.0;
         unsafe {
             spkezp_c(
-                target,
+                target as SpiceInt,
                 et.0,
                 reference_frame.into().as_mut_ptr(),
                 aberration_correction.as_spice_char(),
-                observing_body,
+                observing_body as SpiceInt,
                 position.as_mut_ptr(),
                 &mut light_time,
             )
@@ -181,27 +181,27 @@ mod tests {
     fn gen_test_data() -> [State; 3] {
         [
             [
-                -291569.26474221050739f64,
-                -266709.18712562322617f64,
-                -76099.15410456061363f64,
+                -291_569.264_742_210_5f64,
+                -266_709.187_125_623_2f64,
+                -76_099.154_104_560_61f64,
                 0.64353061379157f64,
                 -0.66608181544709f64,
                 -0.30132283179347f64,
             ]
             .into(),
             [
-                -289240.78060919046402f64,
-                -269096.44152130186558f64,
-                -77180.89871158450842f64,
+                -289_240.780_609_190_46f64,
+                -269_096.441_521_301_87f64,
+                -77_180.898_711_584_51f64,
                 0.65006211575479f64,
                 -0.66016273764220f64,
                 -0.29964267392589f64,
             ]
             .into(),
             [
-                -202558.33919326588511f64,
-                -333880.37279736995697f64,
-                -108450.58380541205406f64,
+                -202_558.339_193_265_89f64,
+                -333_880.372_797_369_96f64,
+                -108_450.583_805_412_05f64,
                 0.82840534359059f64,
                 -0.44612163419131f64,
                 -0.23419745913028f64,

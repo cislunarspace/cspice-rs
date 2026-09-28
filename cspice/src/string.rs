@@ -1,5 +1,5 @@
 //! Functions for converting between Rust strings and SPICE (C) strings.
-use cspice_sys::SpiceChar;
+use cspice_rs_sys::SpiceChar;
 use std::borrow::Cow;
 use std::ffi::{CStr, CString};
 use std::fmt::{Debug, Display, Formatter};
@@ -198,7 +198,6 @@ mod tests {
             let buffer = vec!['a' as SpiceChar, 'b' as SpiceChar];
             SpiceString::from_buffer(buffer);
         })
-        .err()
-        .expect("Expected to panic");
+        .expect_err("Expected to panic");
     }
 }

@@ -1,16 +1,16 @@
 [package]
-name = "cspice"
+name = "cspice-rs"
 version = "0.1.0"
 edition = "2021"
 description = "Safe wrapper around the NAIF CSPICE toolkit"
 license = "LGPL-3.0"
-authors = ["Jacob Halsey <jacob@jhalsey.com>", "Contributors"]
-homepage = "https://github.com/jacob-pro/cspice-rs/tree/master/cspice"
-repository = "https://github.com/jacob-pro/cspice-rs"
+authors = ["Jacob Halsey <jacob@jhalsey.com>", "cislunarspace", "Contributors"]
+homepage = "https://github.com/cislunarspace/cspice-rs/tree/main/cspice"
+repository = "https://github.com/cislunarspace/cspice-rs"
 
 [dependencies]
 chrono = { version = "0.4.19", optional = true }
-cspice-sys = { path = "../cspice-sys", version = "1.0.4" }
+cspice-rs-sys = { path = "../cspice-sys", version = "0.1.0" }
 derive_more = "0.99.17"
 parking_lot = "0.12.1"
 serde = { version = "1.0.137", features = ["derive"] }

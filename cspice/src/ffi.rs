@@ -27,7 +27,7 @@
 //! overhead matters); callers must either hold [`crate::with_spice_lock`] around
 //! the calls or otherwise guarantee serialised access themselves.
 
-use cspice_sys::{
+use cspice_rs_sys::{
     bodvrd_c, erract_c, errdev_c, et2utc_c, failed_c, getmsg_c, ktotal_c, pxform_c, qcktrc_c,
     reset_c, sxform_c, ConstSpiceChar, SpiceInt,
 };
@@ -250,7 +250,7 @@ pub fn bodvrd(body: &str, item: &str, maxn: usize) -> Result<(Vec<f64>, i32), Sp
         check_spice_error()?;
     }
     values.truncate(dim as usize);
-    Ok((values, dim))
+    Ok((values, dim as i32))
 }
 
 /// Convert ephemeris time (ET, seconds past J2000 TDB) to a UTC calendar string
@@ -382,7 +382,7 @@ mod tests {
             assert_eq!(et2utc(0.0, 3).unwrap(), "2000-01-01T11:58:55.816");
             // 2000-01-01T00:00:00 UTC.
             assert_eq!(
-                et2utc(-43135.816079952438, 3).unwrap(),
+                et2utc(-43_135.816_079_952_44, 3).unwrap(),
                 "2000-01-01T00:00:00.000"
             );
         });

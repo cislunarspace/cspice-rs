@@ -15,7 +15,6 @@ pub use crate::error::Error;
 use crate::string::SpiceString;
 use parking_lot::{ReentrantMutex, ReentrantMutexGuard};
 use std::cell::RefCell;
-use std::fmt::Debug;
 use std::ops::Deref;
 use thiserror::Error;
 
@@ -65,9 +64,6 @@ fn initialise_library(guard: &ReentrantMutexGuard<'static, RefCell<bool>>) {
         set_error_defaults();
     }
 }
-
-#[derive(Debug)]
-pub struct SpiceLock(ReentrantMutexGuard<'static, RefCell<bool>>);
 
 /// Error returned from [try_with_spice_lock()].
 #[derive(Debug, Clone, Error)]

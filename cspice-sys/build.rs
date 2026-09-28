@@ -58,8 +58,8 @@ fn main() {
 
     let bindings = bindgen::Builder::default()
         .header(include_dir.join("SpiceUsr.h").to_string_lossy())
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
-        .rustfmt_bindings(true)
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
+        .formatter(bindgen::Formatter::Rustfmt)
         .clang_args(clang_args)
         .generate()
         .expect("Unable to generate bindings");

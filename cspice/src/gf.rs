@@ -6,7 +6,7 @@ use crate::error::get_last_error;
 use crate::string::StaticSpiceStr;
 use crate::string::{static_spice_str, StringParam};
 use crate::{with_spice_lock_or_panic, Error};
-use cspice_sys::{gfsep_c, SpiceChar, SpiceDouble, SpiceInt};
+use cspice_rs_sys::{gfsep_c, SpiceChar, SpiceDouble, SpiceInt};
 
 #[derive(Copy, Clone, Debug)]
 pub enum Shape {

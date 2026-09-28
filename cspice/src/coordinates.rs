@@ -1,6 +1,6 @@
 //! Functions for converting between different types of coordinates.
 use crate::with_spice_lock_or_panic;
-use cspice_sys::{azlrec_c, recazl_c, reclat_c, recrad_c, SpiceBoolean, SpiceDouble};
+use cspice_rs_sys::{azlrec_c, recazl_c, reclat_c, recrad_c, SpiceBoolean, SpiceDouble};
 use derive_more::Into;
 
 /// Rectangular coordinates

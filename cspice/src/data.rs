@@ -2,7 +2,7 @@
 use crate::error::get_last_error;
 use crate::string::StringParam;
 use crate::{with_spice_lock_or_panic, Error};
-use cspice_sys::{furnsh_c, unload_c};
+use cspice_rs_sys::{furnsh_c, unload_c};
 
 /// Load one or more SPICE kernels into a program.
 ///

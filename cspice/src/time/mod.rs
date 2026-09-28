@@ -13,7 +13,7 @@ use crate::error::get_last_error;
 use crate::string::{SpiceString, StringParam};
 use crate::{with_spice_lock_or_panic, Error};
 use calendar::Calendar;
-use cspice_sys::{str2et_c, timdef_c, timout_c, SpiceDouble, SpiceInt};
+use cspice_rs_sys::{str2et_c, timdef_c, timout_c, SpiceDouble, SpiceInt};
 use derive_more::{From, Into};
 use std::fmt::{Debug, Display, Formatter};
 

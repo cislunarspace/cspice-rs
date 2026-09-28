@@ -1,8 +1,7 @@
-# cspice-sys
+# cspice-rs-sys
 
-[![Build](https://github.com/jacob-pro/cspice-rs/actions/workflows/rust.yml/badge.svg)](https://github.com/jacob-pro/cspice-rs/actions)
-[![crates.io](https://img.shields.io/crates/v/cspice-sys.svg)](https://crates.io/crates/cspice-sys)
-[![docs.rs](https://docs.rs/cspice-sys/badge.svg)](https://docs.rs/cspice-sys/latest/cspice_sys/)
+[![CI](https://github.com/cislunarspace/cspice-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/cislunarspace/cspice-rs/actions/workflows/ci.yml)
+![maintenance-status](https://img.shields.io/badge/maintenance-actively--developed-blue.svg)
 
 Unsafe bindings to the NAIF [SPICE Toolkit](https://naif.jpl.nasa.gov/naif/index.html).
 
@@ -31,7 +30,7 @@ the `include` and `lib` directories).
 **WARNING**: On Unix like systems you will likely need to rename `lib/cspice.a` to `lib/libcspice.a` so that it can be
 successfully linked.
 
-Also see the [GitHub workflow](../.github/workflows/rust.yml) for examples on how to set this up.
+Also see the [GitHub workflow](../.github/workflows/ci.yml) for examples on how to set this up.
 
 ## Cross Compilation
 

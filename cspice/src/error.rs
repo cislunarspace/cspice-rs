@@ -2,7 +2,7 @@
 use crate::common::{GET, SET};
 use crate::string::{SpiceStr, SpiceString};
 use crate::with_spice_lock_or_panic;
-use cspice_sys::{
+use cspice_rs_sys::{
     erract_c, errdev_c, failed_c, getmsg_c, qcktrc_c, reset_c, SpiceInt, SPICE_ERROR_LMSGLN,
     SPICE_ERROR_SMSGLN, SPICE_ERROR_TRCLEN, SPICE_ERROR_XMSGLN,
 };

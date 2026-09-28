@@ -1,6 +1,6 @@
 //! Miscellaneous enums and structures.
 use crate::string::{static_spice_str, StaticSpiceStr};
-use cspice_sys::SpiceChar;
+use cspice_rs_sys::SpiceChar;
 
 pub(crate) static SET: StaticSpiceStr = static_spice_str!("SET");
 pub(crate) static GET: StaticSpiceStr = static_spice_str!("GET");

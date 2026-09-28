@@ -3,7 +3,7 @@ use crate::common::{ComparisonOperator, Side};
 use crate::error::get_last_error;
 use crate::string::StringParam;
 use crate::{with_spice_lock_or_panic, Error};
-use cspice_sys::{
+use cspice_rs_sys::{
     _SpiceDataType_SPICE_CHR, _SpiceDataType_SPICE_DP, _SpiceDataType_SPICE_INT, appndc_c,
     appndd_c, appndi_c, card_c, copy_c, scard_c, wncard_c, wncomd_c, wncond_c, wndifd_c, wnelmd_c,
     wnexpd_c, wnextd_c, wnfetd_c, wnfild_c, wnfltd_c, wnincd_c, wninsd_c, wnintd_c, wnreld_c,
@@ -21,14 +21,14 @@ impl CellType for SpiceChar {}
 
 /// A Rust wrapper around a SpiceCell and its data.
 pub struct Cell<T: CellType> {
-    cell: cspice_sys::SpiceCell,
+    cell: cspice_rs_sys::SpiceCell,
     #[allow(dead_code)]
     data: Vec<T>,
 }
 
 impl<T: CellType> Cell<T> {
     /// Access the internal CSPICE Cell structure.
-    pub fn as_mut_cell(&mut self) -> *mut cspice_sys::SpiceCell {
+    pub fn as_mut_cell(&mut self) -> *mut cspice_rs_sys::SpiceCell {
         &mut self.cell
     }
 
@@ -81,7 +81,7 @@ impl Cell<SpiceDouble> {
     /// See [Declaring and Initializing Cells](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/cells.html#Declaring%20and%20Initializing%20Cells)
     pub fn new_double(size: usize) -> Self {
         let mut data = vec![0.0; SPICE_CELL_CTRLSZ as usize + size];
-        let cell = cspice_sys::SpiceCell {
+        let cell = cspice_rs_sys::SpiceCell {
             dtype: _SpiceDataType_SPICE_DP,
             length: 0,
             size: size as SpiceInt,
@@ -112,7 +112,7 @@ impl Cell<SpiceInt> {
     /// See [Declaring and Initializing Cells](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/cells.html#Declaring%20and%20Initializing%20Cells)
     pub fn new_int(size: usize) -> Self {
         let mut data = vec![0; SPICE_CELL_CTRLSZ as usize + size];
-        let cell = cspice_sys::SpiceCell {
+        let cell = cspice_rs_sys::SpiceCell {
             dtype: _SpiceDataType_SPICE_INT,
             length: 0,
             size: size as SpiceInt,
@@ -145,7 +145,7 @@ impl Cell<SpiceChar> {
         let data_len = (SPICE_CELL_CTRLSZ as usize + size) * length;
         let start_index = SPICE_CELL_CTRLSZ as usize * length;
         let mut data = vec![0; data_len];
-        let cell = cspice_sys::SpiceCell {
+        let cell = cspice_rs_sys::SpiceCell {
             dtype: _SpiceDataType_SPICE_CHR,
             length: length as SpiceInt,
             size: size as SpiceInt,

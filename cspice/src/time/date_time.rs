@@ -6,7 +6,7 @@ use crate::time::julian_date::JulianDate;
 use crate::time::system::System;
 use crate::time::{set_default_calendar, Et};
 use crate::{with_spice_lock_or_panic, SpiceString};
-use cspice_sys::{timdef_c, timout_c, SpiceInt};
+use cspice_rs_sys::{timdef_c, timout_c, SpiceInt};
 use std::fmt::{Display, Formatter};
 use std::marker::PhantomData;
 
