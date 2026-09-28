@@ -4,13 +4,21 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
-    # 仅安全相关与 minor/patch；bindgen 等 build 依赖升级需人工验证
-    # CSPICE_DIR / CSPICE_CLANG_TARGET 契约（见 cspice-sys/build.rs）。
+    # 忽略破坏性 major：derive_more 2 重构 API；reqwest 0.13 的 MSRV 1.85
+    # 高于本仓库 1.77。升级走人工 PR。
+    ignore:
+      - dependency-name: "derive_more"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "reqwest"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: "chore(deps)"
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: weekly
+    ignore:
+      # msrv job 的 toolchain 必须钉在 rust-version，不允许 dependabot 升级
+      - dependency-name: "dtolnay/rust-toolchain"
     commit-message:
       prefix: "chore(ci)"
