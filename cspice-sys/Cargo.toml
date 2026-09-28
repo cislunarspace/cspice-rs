@@ -21,4 +21,4 @@ downloadcspice = ["dep:reqwest"]
 # syn 2，产生混合链接（bindgen#3267 类问题）；本 crate 显式使用
 # Formatter::Rustfmt，prettyplease 本就多余。runtime 为 bindgen 运行必需。
 bindgen = { version = "0.73", default-features = false, features = ["runtime"] }
-reqwest = { version = "0.12", features = ["blocking"], optional = true }
+reqwest = { version = "0.13", features = ["blocking"], optional = true }
