@@ -2,6 +2,7 @@
 name = "cspice-rs"
 version = "0.1.0"
 edition = "2021"
+description = "Safe wrapper around the NAIF CSPICE toolkit"
 license = "LGPL-3.0"
 keywords = ["spice", "cspice", "naif", "ephemeris", "astronomy"]
 categories = ["api-bindings", "science"]
