@@ -43,14 +43,21 @@ runs:
             "${FALLBACK_BASE}/${{ inputs.fallback-asset }}"
         fi
 
-        # NAIF tar.Z 实为 gzip 兼容流（上游 CI 同用法）；zip 走 bsdtar/GNU tar 均可。
+        # Windows runner 的 bash（Git Bash）里 tar 是 MSYS GNU tar，不识别 zip，
+        # 改用系统自带 bsdtar（Windows 10+ 内置于 System32）；Unix 直接用 tar。
+        # NAIF tar.Z 实为 gzip 兼容流（上游 CI 同用法）。
+        case "$(uname -s)" in
+          MINGW*|MSYS*|CYGWIN*) TAR="C:/Windows/System32/tar.exe" ;;
+          *)                    TAR="tar" ;;
+        esac
+
         if [ -f cspice.pkg ]; then
           case "${{ inputs.naif-ext }}" in
-            tar.Z) tar -zxf cspice.pkg ;;
-            zip)   tar -xf  cspice.pkg ;;
+            tar.Z) "$TAR" -zxf cspice.pkg ;;
+            zip)   "$TAR" -xf  cspice.pkg ;;
           esac
         else
-          tar -xf cspice.zip
+          "$TAR" -xf cspice.zip
         fi
 
         # 统一定位含 include/ 的目录（NAIF 包为 cspice/，回退包为 mice_*）

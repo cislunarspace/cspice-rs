@@ -8,7 +8,7 @@ license = "LGPL-3.0"
 authors = ["Jacob Halsey <jacob@jhalsey.com>", "cislunarspace"]
 homepage = "https://github.com/cislunarspace/cspice-rs/tree/main/cspice-sys"
 repository = "https://github.com/cislunarspace/cspice-rs"
-rust-version = "1.71"
+rust-version = "1.77"
 
 [features]
 downloadcspice = ["dep:reqwest"]

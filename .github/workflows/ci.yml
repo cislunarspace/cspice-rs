@@ -84,7 +84,6 @@ jobs:
   check-aarch64:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: aarch64-unknown-linux-gnu
@@ -105,8 +104,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # MSRV = 所选 bindgen 的 rust-version（见 cspice-sys/Cargo.toml）
-      - uses: dtolnay/rust-toolchain@1.71.0
+      # MSRV = bindgen 0.73 依赖闭包的有效下限（rustc-hash 2.1 需 1.77，
+      # bindgen 声明的 1.71 实际不可达），见 cspice-sys/Cargo.toml rust-version。
+      - uses: dtolnay/rust-toolchain@1.77
       - uses: ./.github/actions/setup-cspice
         with:
           naif-package: PC_Linux_GCC_64bit

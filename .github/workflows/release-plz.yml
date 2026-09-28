@@ -1,12 +1,13 @@
 name: release-plz
 
-# push main 触发：依 conventional commit 生成/更新版本 PR（含 changelog）。
-# CARGO_REGISTRY_TOKEN secret 就绪后，版本 PR 合并即自动发布到 crates.io；
-# 首个 0.1.0 为手动发布（见 docs/adr/0001）。
-
+# release-plz：依 conventional commit 生成/更新版本 PR（含 changelog）。
+# 触发说明：手动触发（workflow_dispatch）。自动触发需两个前置条件就绪后改回
+# push main：
+# 1. org 设置 "Allow GitHub Actions to create and approve pull requests" 开启
+#    （当前 gh token 无 admin:org 权限，需 org 管理员在 UI 开启）；
+# 2. CARGO_REGISTRY_TOKEN secret 配置（首版 0.1.0 手动发布，见 ADR 0001）。
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   release-plz:
